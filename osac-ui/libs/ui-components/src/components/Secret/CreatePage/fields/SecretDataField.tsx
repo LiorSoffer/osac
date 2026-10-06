@@ -5,7 +5,7 @@ import { FieldArray, useFormikContext } from 'formik';
 
 import SecretValueField from './SecretValueField';
 import { useTranslation } from '../../../../hooks/useTranslation';
-import type { SecretDataEntry, SecretValues } from '../values';
+import { type SecretValues, createSecretDataEntry } from '../values';
 
 const SecretDataField = () => {
   const { t } = useTranslation();
@@ -17,7 +17,7 @@ const SecretDataField = () => {
         {(arrayHelpers) => (
           <Stack hasGutter>
             {values.opaque.map((entry, index) => (
-              <React.Fragment key={index}>
+              <React.Fragment key={entry.uid}>
                 {index > 0 && (
                   <StackItem>
                     <Divider />
@@ -39,9 +39,7 @@ const SecretDataField = () => {
               <Button
                 variant="link"
                 icon={<PlusCircleIcon />}
-                onClick={() =>
-                  arrayHelpers.push<SecretDataEntry>({ key: '', value: new Uint8Array() })
-                }
+                onClick={() => arrayHelpers.push(createSecretDataEntry('', new Uint8Array()))}
               >
                 {t('Add key')}
               </Button>

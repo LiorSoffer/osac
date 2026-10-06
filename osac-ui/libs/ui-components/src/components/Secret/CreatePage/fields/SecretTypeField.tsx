@@ -11,8 +11,8 @@ import {
   HelperTextItem,
   Label,
 } from '@patternfly/react-core';
-import type { TFunction } from 'i18next';
 import { useFormikContext } from 'formik';
+import type { TFunction } from 'i18next';
 
 import { SecretType } from '@osac/types';
 
@@ -34,7 +34,9 @@ const SECRET_TYPES = [
   SecretType.VALUE,
 ] as const;
 
-const getSecretTypeOptions = (t: TFunction): Record<(typeof SECRET_TYPES)[number], SecretTypeOption> => ({
+const getSecretTypeOptions = (
+  t: TFunction,
+): Record<(typeof SECRET_TYPES)[number], SecretTypeOption> => ({
   [SecretType.PULL_SECRET]: {
     title: t('Image pull secret'),
     description: t('Registry credentials / .dockerconfigjson'),
@@ -83,15 +85,10 @@ const SecretTypeField = ({ isEdit }: SecretTypeFieldProps) => {
                 isFullHeight
                 isSelectable
                 isSelected={isSelected}
-                role="radio"
-                aria-checked={isSelected}
-                aria-label={option.title}
+                isDisabled={isEdit}
                 onClick={() => {
-                  if (!isEdit) {
-                    void setFieldValue('type', type);
-                  }
+                  void setFieldValue('type', type);
                 }}
-                style={{ cursor: isEdit ? 'default' : 'pointer' }}
               >
                 <CardTitle>
                   <Flex

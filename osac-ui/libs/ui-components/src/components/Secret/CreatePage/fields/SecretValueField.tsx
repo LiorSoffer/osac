@@ -52,7 +52,7 @@ const SecretValueField = ({
   canRemove = true,
 }: SecretValueFieldProps) => {
   const { t } = useTranslation();
-  const { setFieldError } = useFormikContext<SecretValues>();
+  const { setFieldError, setFieldValue } = useFormikContext<SecretValues>();
   const [field, meta, helpers] = useField<Uint8Array>(`${name}.value`);
 
   const hasBinaryInitial =
@@ -107,7 +107,14 @@ const SecretValueField = ({
             id={`${fieldId}-required-key`}
             value={entry.key}
             isDisabled={!showKey}
-            aria-label={t('Required key')}
+            aria-label={showKey ? t('Key') : t('Required key')}
+            onChange={
+              showKey
+                ? (_event, val) => {
+                    void setFieldValue(`${name}.key`, val);
+                  }
+                : undefined
+            }
           />
         </FormGroup>
       </StackItem>
@@ -132,92 +139,92 @@ const SecretValueField = ({
 
       <StackItem>
         {mode === 'enter' ? (
-        <FormGroup fieldId={`${fieldId}-text`}>
-          <Flex>
-            <FlexItem grow={{ default: 'grow' }}>
-              <TextArea
-                id={`${fieldId}-text`}
-                value={textValue ?? ''}
-                onChange={(_event, nextValue) => {
-                  void helpers.setValue(encodeSecretValue(nextValue));
-                }}
-                onBlur={() => void helpers.setTouched(true)}
-                validated={valueError ? 'error' : 'default'}
-                aria-label={label}
-                aria-invalid={!!valueError}
-                autoResize
-              />
-            </FlexItem>
-            {onRemove && (
-              <FlexItem alignSelf={{ default: 'alignSelfCenter' }}>
-                <Button
-                  variant="plain"
-                  aria-label={t('Remove secret entry')}
-                  onClick={onRemove}
-                  isDisabled={!canRemove}
-                  icon={<MinusCircleIcon />}
+          <FormGroup fieldId={`${fieldId}-text`}>
+            <Flex>
+              <FlexItem grow={{ default: 'grow' }}>
+                <TextArea
+                  id={`${fieldId}-text`}
+                  value={textValue ?? ''}
+                  onChange={(_event, nextValue) => {
+                    void helpers.setValue(encodeSecretValue(nextValue));
+                  }}
+                  onBlur={() => void helpers.setTouched(true)}
+                  validated={valueError ? 'error' : 'default'}
+                  aria-label={label}
+                  aria-invalid={!!valueError}
+                  autoResize
                 />
               </FlexItem>
-            )}
-          </Flex>
-          <FormFieldHelper error={valueError} fieldId={`${fieldId}-text`} />
-        </FormGroup>
-      ) : (
-        <FormGroup fieldId={fileFieldId}>
-          <Flex>
-            <FlexItem grow={{ default: 'grow' }}>
-              <FileUpload
-                id={fileFieldId}
-                type="text"
-                value={textValue ?? ''}
-                filename={fileName}
-                browseButtonText={t('Choose file')}
-                clearButtonText={t('Clear value')}
-                filenameAriaLabel={t('Selected secret file')}
-                filenamePlaceholder={t('No file selected')}
-                textAreaPlaceholder={t('Type text here or replace this value with a file.')}
-                allowEditingUploadedText
-                hideDefaultPreview={textValue === undefined}
-                isRequired
-                validated={valueError ? 'error' : 'default'}
-                aria-label={label}
-                aria-invalid={valueError ? true : undefined}
-                aria-describedby={helperDescribedBy}
-                browseButtonAriaDescribedby={helperDescribedBy}
-                onFileInputChange={(_event, file) => {
-                  void handleFileSelected(file);
-                }}
-                onTextChange={(_event, nextValue) => {
-                  void helpers.setValue(encodeSecretValue(nextValue));
-                }}
-                onTextAreaBlur={() => void helpers.setTouched(true)}
-                onClearClick={() => void clearValue()}
-              >
-                {value.byteLength > 0 && (
+              {onRemove && (
+                <FlexItem alignSelf={{ default: 'alignSelfCenter' }}>
                   <Button
-                    variant="link"
-                    icon={<DownloadIcon />}
-                    onClick={() => downloadSecretBytes(value, entry.key)}
-                  >
-                    {t('Download current value')}
-                  </Button>
-                )}
-              </FileUpload>
-            </FlexItem>
-            {onRemove && (
-              <FlexItem alignSelf={{ default: 'alignSelfCenter' }}>
-                <Button
-                  variant="plain"
-                  aria-label={t('Remove secret entry')}
-                  onClick={onRemove}
-                  isDisabled={!canRemove}
-                  icon={<MinusCircleIcon />}
-                />
+                    variant="plain"
+                    aria-label={t('Remove secret entry')}
+                    onClick={onRemove}
+                    isDisabled={!canRemove}
+                    icon={<MinusCircleIcon />}
+                  />
+                </FlexItem>
+              )}
+            </Flex>
+            <FormFieldHelper error={valueError} fieldId={`${fieldId}-text`} />
+          </FormGroup>
+        ) : (
+          <FormGroup fieldId={fileFieldId}>
+            <Flex>
+              <FlexItem grow={{ default: 'grow' }}>
+                <FileUpload
+                  id={fileFieldId}
+                  type="text"
+                  value={textValue ?? ''}
+                  filename={fileName}
+                  browseButtonText={t('Choose file')}
+                  clearButtonText={t('Clear value')}
+                  filenameAriaLabel={t('Selected secret file')}
+                  filenamePlaceholder={t('No file selected')}
+                  textAreaPlaceholder={t('Type text here or replace this value with a file.')}
+                  allowEditingUploadedText
+                  hideDefaultPreview={textValue === undefined}
+                  isRequired
+                  validated={valueError ? 'error' : 'default'}
+                  aria-label={label}
+                  aria-invalid={valueError ? true : undefined}
+                  aria-describedby={helperDescribedBy}
+                  browseButtonAriaDescribedby={helperDescribedBy}
+                  onFileInputChange={(_event, file) => {
+                    void handleFileSelected(file);
+                  }}
+                  onTextChange={(_event, nextValue) => {
+                    void helpers.setValue(encodeSecretValue(nextValue));
+                  }}
+                  onTextAreaBlur={() => void helpers.setTouched(true)}
+                  onClearClick={() => void clearValue()}
+                >
+                  {value.byteLength > 0 && (
+                    <Button
+                      variant="link"
+                      icon={<DownloadIcon />}
+                      onClick={() => downloadSecretBytes(value, entry.key)}
+                    >
+                      {t('Download current value')}
+                    </Button>
+                  )}
+                </FileUpload>
               </FlexItem>
-            )}
-          </Flex>
-          <FormFieldHelper error={valueError} description={textHelper} fieldId={fileFieldId} />
-        </FormGroup>
+              {onRemove && (
+                <FlexItem alignSelf={{ default: 'alignSelfCenter' }}>
+                  <Button
+                    variant="plain"
+                    aria-label={t('Remove secret entry')}
+                    onClick={onRemove}
+                    isDisabled={!canRemove}
+                    icon={<MinusCircleIcon />}
+                  />
+                </FlexItem>
+              )}
+            </Flex>
+            <FormFieldHelper error={valueError} description={textHelper} fieldId={fileFieldId} />
+          </FormGroup>
         )}
       </StackItem>
     </Stack>

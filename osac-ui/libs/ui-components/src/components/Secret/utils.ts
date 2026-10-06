@@ -42,11 +42,11 @@ export const getSecretTypeDataKeys = (type: SecretType): string | undefined => {
     case SecretType.KUBECONFIG:
       return 'kubeconfig';
     case SecretType.USER_DATA:
-      return 'user-data';
+      return 'userdata';
     case SecretType.VALUE:
       return 'value';
     case SecretType.SSH_PUBLIC_KEY:
-      return 'ssh-publickey';
+      return 'public_key';
     default:
       return undefined;
   }
