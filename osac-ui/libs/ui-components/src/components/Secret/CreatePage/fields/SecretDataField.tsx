@@ -1,12 +1,5 @@
-import {
-  Button,
-  FormFieldGroup,
-  FormFieldGroupHeader,
-  FormGroup,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
-import MinusCircleIcon from '@patternfly/react-icons/dist/esm/icons/minus-circle-icon';
+import React from 'react';
+import { Button, Divider, FormGroup, Stack, StackItem } from '@patternfly/react-core';
 import PlusCircleIcon from '@patternfly/react-icons/dist/esm/icons/plus-circle-icon';
 import { FieldArray, useFormikContext } from 'formik';
 
@@ -19,39 +12,28 @@ const SecretDataField = () => {
   const { values } = useFormikContext<SecretValues>();
 
   return (
-    <FormGroup label={t('Secret data')} fieldId="secret-data" isRequired>
+    <FormGroup fieldId="secret-data" isRequired>
       <FieldArray name="opaque">
         {(arrayHelpers) => (
           <Stack hasGutter>
             {values.opaque.map((entry, index) => (
-              <StackItem key={index}>
-                <FormFieldGroup
-                  header={
-                    <FormFieldGroupHeader
-                      titleText={{
-                        text: t('Secret entry {{number}}', { number: index + 1 }),
-                        id: `secret-entry-group-${index}`,
-                      }}
-                      actions={
-                        <Button
-                          variant="plain"
-                          aria-label={t('Remove secret entry')}
-                          onClick={() => arrayHelpers.remove(index)}
-                          isDisabled={values.opaque.length === 1}
-                          icon={<MinusCircleIcon />}
-                        />
-                      }
-                    />
-                  }
-                >
+              <React.Fragment key={index}>
+                {index > 0 && (
+                  <StackItem>
+                    <Divider />
+                  </StackItem>
+                )}
+                <StackItem>
                   <SecretValueField
                     label={t('Value')}
                     entry={entry}
                     name={`opaque.${index}`}
                     showKey
+                    onRemove={() => arrayHelpers.remove(index)}
+                    canRemove={values.opaque.length > 1}
                   />
-                </FormFieldGroup>
-              </StackItem>
+                </StackItem>
+              </React.Fragment>
             ))}
             <StackItem>
               <Button
@@ -61,7 +43,7 @@ const SecretDataField = () => {
                   arrayHelpers.push<SecretDataEntry>({ key: '', value: new Uint8Array() })
                 }
               >
-                {t('Add secret entry')}
+                {t('Add key')}
               </Button>
             </StackItem>
           </Stack>
