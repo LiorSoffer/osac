@@ -59,6 +59,7 @@ const SecretValueField = ({
     decodeSecretValue(entry.value) === undefined && entry.value.byteLength > 0;
   const [mode, setMode] = useState<InputMode>(hasBinaryInitial ? 'upload' : 'enter');
   const [fileName, setFileName] = useState(hasBinaryInitial ? entry.key : '');
+  const [isUploading, setIsUploading] = useState(false);
 
   const showValidationErrors = useShowFieldValidationErrors();
   const valueError = getVisibleFieldError(meta, showValidationErrors);
@@ -77,10 +78,13 @@ const SecretValueField = ({
     }
 
     try {
+      setIsUploading(true);
       await helpers.setValue(new Uint8Array(await file.arrayBuffer()));
       setFileName(file.name);
     } catch {
       setFieldError(`${name}.value`, t('Failed to read secret file'));
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -161,7 +165,7 @@ const SecretValueField = ({
                     variant="plain"
                     aria-label={t('Remove secret entry')}
                     onClick={onRemove}
-                    isDisabled={!canRemove}
+                    isDisabled={!canRemove || isUploading}
                     icon={<MinusCircleIcon />}
                   />
                 </FlexItem>
@@ -217,7 +221,7 @@ const SecretValueField = ({
                     variant="plain"
                     aria-label={t('Remove secret entry')}
                     onClick={onRemove}
-                    isDisabled={!canRemove}
+                    isDisabled={!canRemove || isUploading}
                     icon={<MinusCircleIcon />}
                   />
                 </FlexItem>
