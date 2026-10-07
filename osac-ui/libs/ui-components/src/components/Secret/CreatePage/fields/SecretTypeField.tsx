@@ -70,7 +70,7 @@ const SecretTypeField = ({ isEdit }: SecretTypeFieldProps) => {
 
   return (
     <FormGroup label={t('Secret type')} fieldId="secret-type" isRequired>
-      <Gallery hasGutter minWidths={{ default: '250px' }}>
+      <Gallery hasGutter minWidths={{ default: '30%' }}>
         {SECRET_TYPES.map((type) => {
           const isSelected = values.type === type;
           const cardId = `secret-type-${type}`;
