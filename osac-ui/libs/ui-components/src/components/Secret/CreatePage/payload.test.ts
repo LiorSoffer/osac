@@ -53,6 +53,18 @@ describe('buildSecretCreatePayload', () => {
 
     expect(payload.data?.value).toEqual(binaryValue);
   });
+
+  it('includes public_key data for SSH_PUBLIC_KEY type', () => {
+    const keyBytes = new TextEncoder().encode('ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA user@host');
+    const typedValues = values([]);
+    typedValues.type = SecretType.SSH_PUBLIC_KEY;
+    typedValues.sshPublicKey.value = keyBytes;
+
+    const payload = buildSecretCreatePayload(typedValues);
+
+    expect(payload.data).toEqual({ public_key: keyBytes });
+    expect(payload.type).toBe(SecretType.SSH_PUBLIC_KEY);
+  });
 });
 
 describe('buildSecretUpdatePayload', () => {
