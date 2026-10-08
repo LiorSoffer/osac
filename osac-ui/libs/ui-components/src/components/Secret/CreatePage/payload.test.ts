@@ -14,6 +14,7 @@ const values = (opaque: Array<{ key: string; value: Uint8Array }>) => ({
   userData: createSecretDataEntry('userdata', new Uint8Array()),
   opaque: opaque.map((e) => createSecretDataEntry(e.key, e.value)),
   value: createSecretDataEntry('value', new Uint8Array()),
+  sshPublicKey: createSecretDataEntry('public_key', new Uint8Array()),
 });
 
 describe('buildSecretCreatePayload', () => {
