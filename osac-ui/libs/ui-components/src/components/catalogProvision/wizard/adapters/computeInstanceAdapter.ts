@@ -63,7 +63,7 @@ export const useComputeInstanceAdapter = (): CatalogProvisionAdapter<
           },
         });
         applyVmCatalogConfigurationDefaults(item, helpers, t);
-        applyVmCatalogGeneralDefaults(item, helpers);
+        applyVmCatalogGeneralDefaults(item, helpers, t);
       },
       wizardTitleKey: 'catalogProvision.vm.wizardTitle',
       wizardDescriptionKey: 'catalogProvision.vm.wizardDescription',

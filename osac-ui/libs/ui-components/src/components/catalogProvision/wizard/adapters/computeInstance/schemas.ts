@@ -11,6 +11,7 @@ import {
   mergeCatalogValidation,
   readCatalogFieldDefinitions,
 } from '../../catalogOverlay';
+import { isValidSshPublicKey } from '../../fields/credentialValidation';
 import type { WizardStepId } from '../../stepIds';
 
 const storageTierSchema = (t: TFunction) =>
@@ -38,11 +39,27 @@ const buildComputeInstanceFieldDefinitions = (catalogItem: unknown, t: TFunction
     definitions,
     t('catalogProvision.vm.fields.bootDisk'),
   );
+  const sshKeyOverlay = getCatalogFieldOverlay('ssh_public_key', definitions, t('SSH public key'));
+  const sshKeyRequired = hasCatalogFieldDefinition('ssh_public_key', definitions);
   const userDataRequired = hasCatalogFieldDefinition('spec.user_data', definitions);
 
   return {
     catalogItemId: yup.string().required(t('catalogProvision.validation.catalogItemRequired')),
     metadataName: resourceNameSchema(t),
+    specSshKey: mergeCatalogValidation(
+      yup
+        .string()
+        .test(
+          'ssh-public-key',
+          t(
+            'SSH public key must be in the form "[TYPE] key [[EMAIL]]". Supported types are ssh-rsa, ssh-ed25519, and ecdsa-sha2-nistp256/384/521.',
+          ),
+          (value) => isValidSshPublicKey(value),
+        ),
+      sshKeyOverlay,
+      sshKeyRequired,
+      t('catalogProvision.validation.required'),
+    ),
     specInstanceType: yup.string().required(t('catalogProvision.validation.instanceTypeRequired')),
     specUserData: mergeCatalogValidation(
       userDataSchema(t),
@@ -128,7 +145,7 @@ export const buildComputeInstanceStepSchema = (
           name: fields.metadataName,
         }),
         spec: yup.object({
-          sshKey: yup.object({ name: yup.string() }),
+          sshPublicKey: fields.specSshKey,
         }),
       });
     case 'configuration':
