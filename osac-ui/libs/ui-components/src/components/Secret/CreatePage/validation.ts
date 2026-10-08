@@ -5,8 +5,8 @@ import * as Yup from 'yup';
 import { SecretType } from '@osac/types';
 import { resourceNameSchema } from '@osac/ui-components/validation/resource-name';
 
-import { isValidSshPublicKey } from '../../catalogProvision/wizard/fields/credentialValidation';
 import { SECRET_FILE_MAX_BYTES, type SecretValues, decodeSecretValue } from './values';
+import { isValidSshPublicKey } from '../../catalogProvision/wizard/fields/credentialValidation';
 
 const getByteLength = (value: unknown): number | undefined => {
   if (!value || typeof value !== 'object') {

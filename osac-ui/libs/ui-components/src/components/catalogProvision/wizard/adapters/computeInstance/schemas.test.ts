@@ -39,7 +39,7 @@ const emptyValues: ComputeInstanceWizardValues = {
   catalogItemId: '',
   metadata: { name: '', project: '' },
   spec: {
-    sshPublicKey: '',
+    sshKey: { name: '' },
     instanceType: '',
     userData: '',
     bootDisk: { sizeGib: '', storageTier: emptyResourceSelectValue() },

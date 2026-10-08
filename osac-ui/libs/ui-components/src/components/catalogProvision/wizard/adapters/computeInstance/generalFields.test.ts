@@ -64,7 +64,7 @@ describe('buildComputeInstanceCreatePayload SSH key', () => {
       id: 'catalog-item',
     } as ComputeInstanceCatalogItem);
 
-    expect(vm.spec?.sshPublicKey).toEqual('tenant-ssh-key');
+    expect(vm.spec?.sshKey).toEqual({ name: 'tenant-ssh-key' });
   });
 
   it('omits the SSH Secret reference when none is selected', () => {
@@ -72,6 +72,6 @@ describe('buildComputeInstanceCreatePayload SSH key', () => {
       id: 'catalog-item',
     } as ComputeInstanceCatalogItem);
 
-    expect(vm.spec?.sshPublicKey).toBeUndefined();
+    expect(vm.spec?.sshKey).toBeUndefined();
   });
 });

@@ -12,9 +12,16 @@ interface SecretSelectionFieldProps {
   label: string;
   filter: string | undefined;
   isRequired?: boolean;
+  isDisabled?: boolean;
 }
 
-const SecretSelectionField = ({ name, label, filter, isRequired }: SecretSelectionFieldProps) => {
+const SecretSelectionField = ({
+  name,
+  label,
+  filter,
+  isRequired,
+  isDisabled,
+}: SecretSelectionFieldProps) => {
   const { data, isLoading, error } = useListResource(Secrets, { filter });
   const { t } = useTranslation();
 
@@ -26,7 +33,7 @@ const SecretSelectionField = ({ name, label, filter, isRequired }: SecretSelecti
         fieldId="secret-selection"
         isRequired={isRequired}
         isLoading={isLoading}
-        isDisabled={!!error}
+        isDisabled={isDisabled || !!error}
         options={
           data?.items.length
             ? [
