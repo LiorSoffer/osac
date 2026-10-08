@@ -14,7 +14,7 @@ export const createEmptyComputeInstanceValues = (): ComputeInstanceWizardValues 
   catalogItemId: '',
   metadata: { name: '', project: '' },
   spec: {
-    sshKey: { name: '' },
+    sshPublicKey: '',
     instanceType: '',
     userData: '',
     bootDisk: { sizeGib: '', storageTier: emptyResourceSelectValue() },
@@ -77,9 +77,9 @@ export const buildComputeInstanceCreatePayload = (
     spec.autoExternalIpAttachment = true;
   }
 
-  const sshKeyName = values.spec.sshKey.name.trim();
-  if (sshKeyName) {
-    spec.sshKey = { name: sshKeyName };
+  const sshPublicKey = values.spec.sshPublicKey.trim();
+  if (sshPublicKey) {
+    spec.sshPublicKey = sshPublicKey;
   }
 
   const userData = values.spec.userData.trim();

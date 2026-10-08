@@ -39,7 +39,7 @@ const emptyValues: ComputeInstanceWizardValues = {
   catalogItemId: '',
   metadata: { name: '', project: '' },
   spec: {
-    sshKey: { name: '' },
+    sshPublicKey: '',
     instanceType: '',
     userData: '',
     bootDisk: { sizeGib: '', storageTier: emptyResourceSelectValue() },
@@ -119,15 +119,6 @@ describe('buildComputeInstanceStepSchema', () => {
   });
 
   it('accepts valid DNS label name on general step', async () => {
-    const errors = await validateStep('general', {
-      ...emptyValues,
-      catalogItemId: vmCatalogItem.id,
-      metadata: { name: 'my-vm', project: '' },
-    });
-    expect(errors).toEqual({});
-  });
-
-  it('does not require an SSH key on general step', async () => {
     const errors = await validateStep('general', {
       ...emptyValues,
       catalogItemId: vmCatalogItem.id,

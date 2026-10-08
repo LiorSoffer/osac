@@ -20,9 +20,7 @@ export interface ComputeInstanceWizardValues {
     project: string;
   };
   spec: {
-    sshKey: {
-      name: string;
-    };
+    sshPublicKey: string;
     instanceType: string;
     userData: string;
     bootDisk: ComputeInstanceDiskValues;
@@ -31,7 +29,9 @@ export interface ComputeInstanceWizardValues {
   };
 }
 
-export const VM_SSH_KEY_FORM_PATH = 'spec.sshKey.name';
+export const VM_SSH_KEY_WIRE_PATH = 'ssh_public_key';
+export const VM_SSH_KEY_FORM_PATH = 'spec.sshPublicKey';
+export const vmSshPublicKeyWirePath = VM_SSH_KEY_WIRE_PATH;
 
 export const CONFIGURATION_CATALOG_PATHS = [
   'spec.user_data',
