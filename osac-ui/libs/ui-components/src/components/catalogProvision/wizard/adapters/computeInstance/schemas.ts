@@ -127,15 +127,11 @@ export const buildComputeInstanceStepSchema = (
         metadata: yup.object({
           name: fields.metadataName,
         }),
-        spec: yup.object({
-          sshKey: yup.object({ name: yup.string() }),
-        }),
       });
     case 'configuration':
       return yup.object({
         spec: yup.object({
           instanceType: fields.specInstanceType,
-          userData: fields.specUserData,
         }),
       });
     case 'storage':
@@ -149,6 +145,13 @@ export const buildComputeInstanceStepSchema = (
       return yup.object({
         spec: yup.object({
           networking: fields.specNetworking,
+        }),
+      });
+    case 'access':
+      return yup.object({
+        spec: yup.object({
+          sshKey: yup.object({ name: yup.string() }),
+          userData: fields.specUserData,
         }),
       });
     default:
