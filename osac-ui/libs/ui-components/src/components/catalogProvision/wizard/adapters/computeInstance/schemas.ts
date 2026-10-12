@@ -28,11 +28,7 @@ const storageTierSchema = (t: TFunction) =>
 const buildComputeInstanceFieldDefinitions = (catalogItem: unknown, t: TFunction) => {
   const definitions = readCatalogFieldDefinitions(catalogItem);
 
-  const userDataOverlay = getCatalogFieldOverlay(
-    'spec.user_data',
-    definitions,
-    t('catalogProvision.vm.fields.userData'),
-  );
+  const userDataOverlay = getCatalogFieldOverlay('spec.user_data', definitions, t('Cloud-init'));
   const bootDiskOverlay = getCatalogFieldOverlay(
     'spec.boot_disk.size_gib',
     definitions,

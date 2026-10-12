@@ -164,7 +164,6 @@ describe('buildComputeInstanceStepSchema', () => {
     expect(errors).toEqual({});
   });
 
-
   it('validates user data on access step', async () => {
     const errors = await validateStep(
       'access',
