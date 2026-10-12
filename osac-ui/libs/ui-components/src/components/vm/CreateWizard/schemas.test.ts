@@ -253,7 +253,7 @@ describe('buildComputeInstanceStepSchema', () => {
       },
     });
     expect(errors).toEqual({
-      spec: { userData: { value: 'User data must not exceed 64 KB.' } },
+      spec: { userData: { value: 'Cloud-init must not exceed 64 KB.' } },
     });
 
     await expect(
