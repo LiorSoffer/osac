@@ -17,7 +17,7 @@ import type { TFunction } from 'i18next';
 import { SecretType } from '@osac/types';
 
 import { useTranslation } from '../../../../hooks/useTranslation';
-import type { SecretValues } from '../values';
+import { type SecretValues, defaultDataForType } from '../values';
 
 import './SecretTypeField.css';
 
@@ -93,6 +93,7 @@ const SecretTypeField = ({ isEdit }: SecretTypeFieldProps) => {
                 isDisabled={isEdit}
                 onClick={() => {
                   void setFieldValue('type', type);
+                  void setFieldValue('data', defaultDataForType(type));
                 }}
               >
                 <CardTitle>

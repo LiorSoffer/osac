@@ -52,7 +52,8 @@ const SecretValueField = ({
   canRemove = true,
 }: SecretValueFieldProps) => {
   const { t } = useTranslation();
-  const { setFieldError, setFieldValue } = useFormikContext<SecretValues>();
+  const { setFieldError } = useFormikContext<SecretValues>();
+  const [keyField, keyMeta, keyHelpers] = useField<string>(`${name}.key`);
   const [field, meta, helpers] = useField<Uint8Array>(`${name}.value`);
 
   const hasBinaryInitial =
@@ -62,9 +63,11 @@ const SecretValueField = ({
   const [isUploading, setIsUploading] = useState(false);
 
   const showValidationErrors = useShowFieldValidationErrors();
+  const keyError = getVisibleFieldError(keyMeta, showValidationErrors);
   const valueError = getVisibleFieldError(meta, showValidationErrors);
   const value = field.value ?? new Uint8Array();
   const textValue = decodeSecretValue(value);
+  const keyFieldId = `${name.replaceAll('.', '-')}-key`;
   const fieldId = `${name.replaceAll('.', '-')}-value`;
   const fileFieldId = `${name.replaceAll('.', '-')}-file`;
   const textHelper = t('Type text here or replace this value with a file.');
@@ -102,24 +105,25 @@ const SecretValueField = ({
   return (
     <Stack hasGutter>
       <StackItem>
-        <FormGroup
-          label={showKey ? t('Key') : t('Required key')}
-          fieldId={`${fieldId}-required-key`}
-          isRequired
-        >
+        <FormGroup label={showKey ? t('Key') : t('Required key')} fieldId={keyFieldId} isRequired>
           <TextInput
-            id={`${fieldId}-required-key`}
-            value={entry.key}
+            id={keyFieldId}
+            name={keyField.name}
+            value={keyField.value}
             isDisabled={!showKey}
+            validated={keyError ? 'error' : 'default'}
             aria-label={showKey ? t('Key') : t('Required key')}
+            aria-invalid={!!keyError}
             onChange={
               showKey
                 ? (_event, val) => {
-                    void setFieldValue(`${name}.key`, val);
+                    void keyHelpers.setValue(val);
                   }
                 : undefined
             }
+            onBlur={keyField.onBlur}
           />
+          <FormFieldHelper error={keyError} fieldId={keyFieldId} />
         </FormGroup>
       </StackItem>
       <StackItem>
@@ -208,7 +212,7 @@ const SecretValueField = ({
                     <Button
                       variant="link"
                       icon={<DownloadIcon />}
-                      onClick={() => downloadSecretBytes(value, entry.key)}
+                      onClick={() => downloadSecretBytes(value, keyField.value)}
                     >
                       {t('Download current value')}
                     </Button>
