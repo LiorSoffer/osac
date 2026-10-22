@@ -9,11 +9,7 @@ import SecretValueField from './SecretValueField';
 import { useTranslation } from '../../../../hooks/useTranslation';
 import { type SecretValues, createSecretDataEntry } from '../values';
 
-interface SecretDataFieldProps {
-  typeLabel?: string;
-}
-
-const SecretDataField = ({ typeLabel: typeLabel }: SecretDataFieldProps) => {
+const SecretDataField = () => {
   const { t } = useTranslation();
   const { values } = useFormikContext<SecretValues>();
   const isOpaque = values.type === SecretType.OPAQUE || values.type === SecretType.UNSPECIFIED;
@@ -24,39 +20,27 @@ const SecretDataField = ({ typeLabel: typeLabel }: SecretDataFieldProps) => {
         {(arrayHelpers) => (
           <Stack hasGutter>
             {values.data.map((entry, index) => {
-              const isPrimaryTyped = !isOpaque && index === 0;
               const isAdditionalTyped = !isOpaque && index > 0;
 
               return (
                 <React.Fragment key={entry.uid}>
-                  {isAdditionalTyped && index === 1 && (
-                    <>
-                      <StackItem>
-                        <Divider />
-                      </StackItem>
-                      <StackItem>
-                        <Title headingLevel="h3" size="md">
-                          {t('Additional keys')}
-                        </Title>
-                      </StackItem>
-                    </>
-                  )}
-                  {isOpaque && index > 0 && (
+                  {index > 0 && (
                     <StackItem>
                       <Divider />
                     </StackItem>
                   )}
-                  {isAdditionalTyped && index > 1 && (
+                  {isAdditionalTyped && index === 1 && (
                     <StackItem>
-                      <Divider />
+                      <Title headingLevel="h3" size="md">
+                        {t('Additional keys')}
+                      </Title>
                     </StackItem>
                   )}
                   <StackItem>
                     <SecretValueField
-                      label={isPrimaryTyped && typeLabel ? typeLabel : t('Value')}
                       entry={entry}
                       name={`data.${index}`}
-                      showKey={isOpaque || isAdditionalTyped}
+                      keyEditable={isOpaque || isAdditionalTyped}
                       onRemove={
                         (isOpaque && values.data.length > 1) || isAdditionalTyped
                           ? () => arrayHelpers.remove(index)

@@ -70,8 +70,19 @@ interface SecretTypeFieldProps {
 
 const SecretTypeField = ({ isEdit }: SecretTypeFieldProps) => {
   const { t } = useTranslation();
-  const { values, setFieldValue } = useFormikContext<SecretValues>();
+  const { values, setValues } = useFormikContext<SecretValues>();
   const options = getSecretTypeOptions(t);
+
+  const handleSelectType = (type: SecretType, isSelected: boolean) => {
+    if (isEdit || isSelected) {
+      return;
+    }
+    void setValues({
+      ...values,
+      type,
+      data: defaultDataForType(type),
+    });
+  };
 
   return (
     <FormGroup label={t('Secret type')} fieldId="secret-type" isRequired>
@@ -91,10 +102,7 @@ const SecretTypeField = ({ isEdit }: SecretTypeFieldProps) => {
                 isSelectable
                 isSelected={isSelected}
                 isDisabled={isEdit}
-                onClick={() => {
-                  void setFieldValue('type', type);
-                  void setFieldValue('data', defaultDataForType(type));
-                }}
+                onClick={() => handleSelectType(type, isSelected)}
               >
                 <CardTitle>
                   <Flex

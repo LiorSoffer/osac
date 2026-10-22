@@ -23,7 +23,7 @@ import {
 import { useTranslation } from '../../../../hooks/useTranslation';
 import { getVisibleFieldError } from '../../../Form/fieldError';
 import { useShowFieldValidationErrors } from '../../../Form/FieldValidationContext';
-import { downloadSecretBytes } from '../../utils';
+import { downloadSecretBytes, getSecretType } from '../../utils';
 import {
   SECRET_FILE_MAX_BYTES,
   type SecretDataEntry,
@@ -37,8 +37,7 @@ type InputMode = 'enter' | 'upload';
 interface SecretValueFieldProps {
   entry: SecretDataEntry;
   name: string;
-  showKey?: boolean;
-  label: string;
+  keyEditable?: boolean;
   onRemove?: () => void;
   canRemove?: boolean;
 }
@@ -46,16 +45,16 @@ interface SecretValueFieldProps {
 const SecretValueField = ({
   entry,
   name,
-  showKey = false,
-  label,
+  keyEditable = false,
   onRemove,
   canRemove = true,
 }: SecretValueFieldProps) => {
   const { t } = useTranslation();
-  const { setFieldError } = useFormikContext<SecretValues>();
+  const { setFieldError, values } = useFormikContext<SecretValues>();
+  const secretTypes = getSecretType(t);
+  const valueLabel = keyEditable ? t('Value') : secretTypes[values.type];
   const [keyField, keyMeta, keyHelpers] = useField<string>(`${name}.key`);
   const [field, meta, helpers] = useField<Uint8Array>(`${name}.value`);
-
   const hasBinaryInitial =
     decodeSecretValue(entry.value) === undefined && entry.value.byteLength > 0;
   const [mode, setMode] = useState<InputMode>(hasBinaryInitial ? 'upload' : 'enter');
@@ -105,17 +104,21 @@ const SecretValueField = ({
   return (
     <Stack hasGutter>
       <StackItem>
-        <FormGroup label={showKey ? t('Key') : t('Required key')} fieldId={keyFieldId} isRequired>
+        <FormGroup
+          label={keyEditable ? t('Key') : t('Required key')}
+          fieldId={keyFieldId}
+          isRequired
+        >
           <TextInput
             id={keyFieldId}
             name={keyField.name}
             value={keyField.value}
-            isDisabled={!showKey}
+            isDisabled={!keyEditable}
             validated={keyError ? 'error' : 'default'}
-            aria-label={showKey ? t('Key') : t('Required key')}
+            aria-label={keyEditable ? t('Key') : t('Required key')}
             aria-invalid={!!keyError}
             onChange={
-              showKey
+              keyEditable
                 ? (_event, val) => {
                     void keyHelpers.setValue(val);
                   }
@@ -127,7 +130,7 @@ const SecretValueField = ({
         </FormGroup>
       </StackItem>
       <StackItem>
-        <FormGroup label={t('Value')} fieldId={fieldId} isRequired>
+        <FormGroup label={valueLabel} fieldId={fieldId} isRequired>
           <Radio
             id={`${fieldId}-enter`}
             name={`${fieldId}-mode`}
@@ -158,7 +161,7 @@ const SecretValueField = ({
                   }}
                   onBlur={() => void helpers.setTouched(true)}
                   validated={valueError ? 'error' : 'default'}
-                  aria-label={label}
+                  aria-label={valueLabel}
                   aria-invalid={!!valueError}
                   autoResize
                 />
@@ -195,7 +198,7 @@ const SecretValueField = ({
                   hideDefaultPreview={textValue === undefined}
                   isRequired
                   validated={valueError ? 'error' : 'default'}
-                  aria-label={label}
+                  aria-label={valueLabel}
                   aria-invalid={valueError ? true : undefined}
                   aria-describedby={helperDescribedBy}
                   browseButtonAriaDescribedby={helperDescribedBy}
