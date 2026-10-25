@@ -25,8 +25,8 @@ const VmDetailsCard = ({ vm }: Props) => {
   const catalogItem = vm.spec?.catalogItem;
   const instanceType = vm.spec?.instanceType;
   const sshKey = vm.spec?.sshKey;
-  const sshKeyLabel = sshKey?.name?.trim() || sshKey?.id?.trim();
-  const sshKeyDetailsUrl = sshKey?.id?.trim() ? `/secrets/${sshKey.id.trim()}` : undefined;
+  const sshKeyLabel = sshKey?.name || sshKey?.id;
+  const sshKeyDetailsUrl = sshKey?.id ? `/secrets/${sshKey.id}` : undefined;
 
   return (
     <Card isFullHeight>

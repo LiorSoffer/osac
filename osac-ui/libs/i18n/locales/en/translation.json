@@ -182,7 +182,6 @@
   "Cloud Init User Data": "Cloud Init User Data",
   "Cloud provider admin": "Cloud provider admin",
   "Cloud-init": "Cloud-init",
-  "Cloud-init is required": "Cloud-init is required",
   "Cloud-init must not exceed 64 KB.": "Cloud-init must not exceed 64 KB.",
   "Cloud-init script or config at launch": "Cloud-init script or config at launch",
   "Cluster": "Cluster",

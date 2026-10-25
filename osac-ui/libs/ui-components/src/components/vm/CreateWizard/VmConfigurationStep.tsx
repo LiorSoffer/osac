@@ -1,5 +1,3 @@
-import { useFormikContext } from 'formik';
-
 import ComputeInstanceTypeField from './fields/ComputeInstanceTypeField';
 import OsacForm from '../../Form/OsacForm';
 import ProvisioningField from '../../ProvisioningWizard/fields/ProvisioningField';
